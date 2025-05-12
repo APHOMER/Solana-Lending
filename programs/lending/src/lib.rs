@@ -1,6 +1,14 @@
 use anchor_lang::prelude::*;
 use instruction::*;
 
+use crate::instructions::process_init_bank;
+use crate::instructions::process_init_user;
+use crate::instructions::process_deposit;
+use crate::instructions::process_withdraw;
+use crate::instructions::process_repay;
+use crate::instructions::process_liquidate;
+use anchor_spl::token::accessor::amount;
+
 mod state;
 mod instructions;
 mod error;
@@ -34,9 +42,16 @@ pub mod lending {
         process_borrow(ctx, amount)
     }
 
+    pub fn repay(ctx: Context<Repay>, amount: u64) -> Result<()> {
+        process_repay(ctx, amount)
+    }
 
-    
+    pub fn liquidate(ctx: Context<Liquidate>) -> Result<()> {
+        process_liquidate(ctx, amount)
+    }
+
 }
+
 
 
 
