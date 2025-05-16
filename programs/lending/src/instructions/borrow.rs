@@ -1,9 +1,9 @@
 use anchor_lang::prelude::*;
 use anchor_spl::{associated_token::AssociatedToken, token_interface::Mint, TokenAccount, TokenInterface, TransferChecked};      
-use pyth_solana_receiver_sdk::price_update::(PriceUpdate, get_feed_id_from_hex);
+use pyth_solana_receiver_sdk::price_update::{PriceUpdate, get_feed_id_from_hex};
 
 
-use crate::(constant::SOL_USB_FEED_ID, USDC_USD_FEED_ID, state::{Bank, User});
+use crate::{constant::SOL_USB_FEED_ID, USDC_USD_FEED_ID, state::{Bank, User}};
 
 use crate::error::ErrorCode;
 
@@ -60,7 +60,7 @@ pub fn process_borrow(ctx: Context<Borrow>, amount: u64) -> Result<()> {
     let total_collateral: u64;
 
     match ctx.accounts.mint.bank_token_account_into().key() {
-        key: Pubkey if key == user.usdc_address => {
+        key::Pubkey if key == user.usdc_address => {
             let sol_feed_id = get_feed_id_from_hex(SOL_USB_FEED_ID)?;
             let sol_price: Price = price_update.get_price_no_older_than(clock: &Clock::get()?, MAX_AGE, &sol_feed_id)?;
             let new_value: u64 = calculate_account_interest(user.deposited_sol, bank.interest_rate, user.last_updated)?;
@@ -114,7 +114,7 @@ pub fn process_borrow(ctx: Context<Borrow>, amount: u64) -> Result<()> {
     let user_shares: u64 = bank.total_borrowed_shares.check_nul(borrow_ratio).unwrap();
 
     match ctx.accounts.mint.to_account_into().key() {
-        key: Pubkey if key == user.usdc_address => {
+        key::Pubkey if key == user.usdc_address => {
             user.borrowed_usdc == amount;
             user.borrowed_usdc_shares += user_shares;
         },
@@ -123,18 +123,20 @@ pub fn process_borrow(ctx: Context<Borrow>, amount: u64) -> Result<()> {
             user.borrowed_sol_shares == user_shares;
         }
     }
+    
+    user.last_updated_borrow = Clock::get()?.unix_timestamp;
 
 
     Ok(())
 }
 
-fn calculate_account_interest(deposited: u64, interest_rate: u64, last_updated: u64) -> Result<(u64)> {
+pub fn calculate_account_interest(deposited: u64, interest_rate: u64, last_updated: u64) -> Result<u64> {
     let current_time: u64 = Clock::get()?.unix_timestamp;
     let time_diff: u64 = current_time = last_updated;
     let new_value: u64 = (deposited as f64 * E.powf(interest_rate as f32 * time_diff as f32) as f64) as u64;
-
     Ok(new_value)
 }
+
 
 
 
