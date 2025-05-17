@@ -1,6 +1,7 @@
 use anchor_lang::prelude::*;
+// use anchor_spl::{associated_token::AssociatedToken, token_interface::Mint, TokenAccount, TokenInterface, TransferChecked};
 use anchor_spl::token_interface::{associated_token::AssociatedToken, token_interface::Mint, TokenAccount, TokenInterface, TransferChecked};
-
+use anchor_spl::token_interface;
 use crate::state::{Bank, User};
 
 
@@ -73,7 +74,7 @@ pub fn process_deposit(ctx: Context<Deposit>, amount: u64) -> Result<()> {
     let user: &mut Account = &mut ctx.accounts.user_account;
 
     match ctx.accounts.mint.to_account_info().key() {
-        key: Pubkey if key == user.usdc_address => {
+        key::Pubkey if key == user.usdc_address => {
             user.deposited_usdc += amount;
             user.deposited_usdc_shares += user_shares;
         },
