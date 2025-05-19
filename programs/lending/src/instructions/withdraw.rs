@@ -1,12 +1,15 @@
 use anchor_lang::prelude::*;
+use core::f32::consts::E;
 use anchor_spl::{associated_token::AssociatedToken, token_interface::Mint, TokenAccount, TokenInterface, TransferChecked};
+use anchor_spl::token_interface;
+
 
 use crate::state::{Bank, User};
 
-use crate::Error::ErrorCode;
+use crate::ErrorCode;
 
 #[derive(Accounts)]
-pub struct withdraw<'info> {
+pub struct Withdraw<'info> {
     #[account(mut)]
     pub signer: Signer<'info>,
 
