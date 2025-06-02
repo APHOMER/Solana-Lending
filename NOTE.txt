@@ -1,0 +1,5 @@
+
+ cargo add anchor-lang --features init-if-needed
+
+
+ 
